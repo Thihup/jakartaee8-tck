@@ -8,23 +8,22 @@ import java.util.Properties;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * @author Arjan Tijms
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
+@ExtendWith(DispatchTest.CountingExtension.class)
 public class DispatchTest {
 
     @ArquillianResource
@@ -66,24 +65,24 @@ public class DispatchTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         dispatchClient = new DispatchClient(base, "DispatchTestServlet");
     }
 
-    @After
+    @AfterEach
     public void teardown() {
         testProperties.clear();
     }
 
-    @Rule
-    public TestRule watcher = new TestWatcher() {
+    public static class CountingExtension implements BeforeEachCallback {
         @Override
-        protected void starting(Description description) {
+        public void beforeEach(ExtensionContext extensionContext) throws Exception {
             count = count + 1;
-            System.out.println("\n\nStarting test " + count + ": " + description.getMethodName());
+            System.out.println("\n\nStarting test " + count + ": " + extensionContext.getRequiredTestMethod().getName());
         }
     };
+
 
 
     /* Run test */
@@ -194,7 +193,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void dispatchReturnTest4() throws Exception {
         dispatchClient.dispatchReturnTest4();
     }
@@ -217,7 +216,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void dispatchReturnTest5() throws Exception {
         dispatchClient.dispatchReturnTest5();
     }
@@ -525,7 +524,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void startAsyncAgainTest12() throws Exception {
         dispatchClient.startAsyncAgainTest12();
     }
@@ -549,7 +548,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void startAsyncAgainTest13() throws Exception {
         dispatchClient.startAsyncAgainTest13();
     }
@@ -574,7 +573,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void startAsyncAgainTest14() throws Exception {
         dispatchClient.startAsyncAgainTest14();
     }
@@ -598,7 +597,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void startAsyncAgainTest15() throws Exception {
         dispatchClient.startAsyncAgainTest15();
     }
@@ -622,7 +621,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void startAsyncAgainTest16() throws Exception {
         dispatchClient.startAsyncAgainTest16();
     }
@@ -646,7 +645,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void startAsyncAgainTest17() throws Exception {
         dispatchClient.startAsyncAgainTest17();
     }
@@ -756,7 +755,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void negativeDispatchTest8() throws Exception {
         dispatchClient.negativeDispatchTest8();
     }
@@ -780,7 +779,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void negativeDispatchTest9() throws Exception {
         dispatchClient.negativeDispatchTest9();
     }
@@ -804,7 +803,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void negativeDispatchTest12() throws Exception {
         dispatchClient.negativeDispatchTest12();
     }
@@ -828,7 +827,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void negativeDispatchTest13() throws Exception {
         dispatchClient.negativeDispatchTest13();
     }
@@ -919,7 +918,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore("cross-context")
+    @Disabled("cross-context")
     public void dispatchAfterCommitTest4() throws Exception {
         dispatchClient.dispatchAfterCommitTest4();
     }
@@ -938,7 +937,7 @@ public class DispatchTest {
      */
     @Test
     @RunAsClient
-    @Ignore
+    @Disabled
     public void dispatchAfterCommitTest5() throws Exception {
         dispatchClient.dispatchAfterCommitTest5();
     }

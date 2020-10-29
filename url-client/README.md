@@ -24,7 +24,7 @@ public class MyTester extends AbstractUrlClient {
 From your actual test class (say a JUnit test), instantiate `MyTest` with a URL to reach the test server and test app, and a servlet within the app to call. For example, when using Arquillian:
 
 ```java
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class MyTest {
 
     @ArquillianResource
@@ -32,7 +32,7 @@ public class MyTest {
 
     private MyTester myTester;
 
-    @Before
+    @BeforeEach
     public void setup() {
         myTester = new MyTester(base, "TestServlet");
     }

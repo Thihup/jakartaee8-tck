@@ -1,10 +1,5 @@
 package org.jakartaee8.servlet.servletrequest.filter.on.forward;
 
-import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
-
-import java.io.File;
-import java.net.URL;
-
 import org.jakartaee8.servlet.servletrequest.filter.request.dispatching.DummyServlet;
 import org.jakartaee8.servlet.servletrequest.filter.request.dispatching.ErrorPage;
 import org.jakartaee8.servlet.servletrequest.filter.request.dispatching.ForwardTest1Servlet;
@@ -20,21 +15,26 @@ import org.jakartaee8.servlet.servletrequest.filter.request.dispatching.TestServ
 import org.jakartaee8.servlet.servletrequest.filter.request.dispatching.Test_Filter;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+import java.io.File;
+import java.net.URL;
+
+import static org.jboss.shrinkwrap.api.ShrinkWrap.create;
 
 /**
  * @author Arjan Tijms
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
+@ExtendWith(FilterfilterRequestDispatcherTest.CountingExtension.class)
 public class FilterfilterRequestDispatcherTest {
 
     @ArquillianResource
@@ -42,12 +42,11 @@ public class FilterfilterRequestDispatcherTest {
     private FilterfilterRequestDispatcherClient filterWrappedResponseClient;
     private static int count;
 
-    @Rule
-    public TestRule watcher = new TestWatcher() {
+    public static class CountingExtension implements BeforeEachCallback {
         @Override
-        protected void starting(Description description) {
+        public void beforeEach(ExtensionContext extensionContext) throws Exception {
             count = count + 1;
-            System.out.println("\n\nStarting test " + count + ": " + description.getMethodName());
+            System.out.println("\n\nStarting test " + count + ": " + extensionContext.getRequiredTestMethod().getName());
         }
     };
 
@@ -80,7 +79,7 @@ public class FilterfilterRequestDispatcherTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         filterWrappedResponseClient = new FilterfilterRequestDispatcherClient(base, "TestServlet");
     }

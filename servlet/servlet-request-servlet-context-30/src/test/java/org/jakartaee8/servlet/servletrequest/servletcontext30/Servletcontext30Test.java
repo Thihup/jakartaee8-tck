@@ -9,21 +9,20 @@ import org.jakartaee8.urlclient.ServletTestUtil;
 import org.jakartaee8.urlclient.StaticLog;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * @author Arjan Tijms
  */
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
+@ExtendWith(Servletcontext30Test.CountingExtension.class)
 public class Servletcontext30Test {
 
     @ArquillianResource
@@ -31,14 +30,14 @@ public class Servletcontext30Test {
     private Servletcontext30Client filterWrappedResponseClient;
     private static int count;
 
-    @Rule
-    public TestRule watcher = new TestWatcher() {
+    public static class CountingExtension implements BeforeEachCallback {
         @Override
-        protected void starting(Description description) {
+        public void beforeEach(ExtensionContext extensionContext) throws Exception {
             count = count + 1;
-            System.out.println("\n\nStarting test " + count + ": " + description.getMethodName());
+            System.out.println("\n\nStarting test " + count + ": " + extensionContext.getRequiredTestMethod().getName());
         }
     };
+
 
     @Deployment(testable = false)
     public static WebArchive createDeployment() {
@@ -89,7 +88,7 @@ public class Servletcontext30Test {
         }
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         filterWrappedResponseClient = new Servletcontext30Client(base, "TestServlet");
     }
